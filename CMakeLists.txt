@@ -1,7 +1,14 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 project(openslide VERSION 3.4.1 LANGUAGES C)
 add_compile_definitions(SUFFIXED_VERSION="${PROJECT_VERSION}")
 
+# dirs
+if(WIN32 AND NOT CYGWIN)
+    set(DEF_INSTALL_CMAKE_DIR CMake)
+else()
+    include(GNUInstallDirs) # define CMAKE_INSTALL_*
+    set(DEF_INSTALL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/utf8cpp)
+endif()
 
 file(GLOB openslide_SRC "${CMAKE_SOURCE_DIR}/src/*.c" )
 add_library(${PROJECT_NAME} STATIC ${openslide_SRC})
@@ -30,12 +37,12 @@ pkg_search_module(GLIB REQUIRED glib-2.0)
 find_package(Cairo 1.2.0 REQUIRED)
 find_package(PNG REQUIRED)
 find_package(GDKPIXBUF 1.6.0 REQUIRED)
-find_package(LIBXML2 REQUIRED)
-find_package(SQLITE3 3.6.20 REQUIRED)
+find_package(LibXml2 REQUIRED)
+find_package(SQLite3 3.6.20 REQUIRED)
 #required includes
 set(OPENSLIDE_INCLUDES
   ${ZLIB_INCLUDE_DIRS}
-  ${OPENJPEG_INCLUDE_DIRS}
+  ${OpenJPEG_INCLUDE_DIRS}
   ${JPEG_INCLUDE_DIR}
   ${TIFF_INCLUDE_DIR}
   ${GLIB_INCLUDE_DIRS}
@@ -49,7 +56,7 @@ set(OPENSLIDE_INCLUDES
 # required link directories
 set(OPENSLIDE_DEP_LIBS
   ${ZLIB_LIBRARIES}
-  ${OPENJPEG_LIBRARIES}
+  ${OpenJPEG_LIBRARIES}
   ${JPEG_LIBRARIES}
   ${TIFF_LIBRARIES}
   ${GLIB_LDFLAGS}
@@ -78,9 +85,11 @@ add_compile_definitions(FOPEN_CLOEXEC_FLAG)
 
 
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}-targets")
-
-install(TARGETS openslide
-    EXPORT ${TARGETS_EXPORT_NAME}
+message(STATUS ${CMAKE_INSTALL_LIBDIR})
+install(
+    TARGETS openslide
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+
 )
