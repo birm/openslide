@@ -33,10 +33,12 @@ find_package(JPEG REQUIRED)
 find_package(OPENJPEG REQUIRED)
 find_package(TIFF REQUIRED)
 find_package(GLib REQUIRED)
+find_package(GTK2 REQUIRED)
 #find_package(PkgConfig REQUIRED)
 #pkg_search_module(GLIB REQUIRED glib-2.0)
 find_package(Cairo 1.2.0 REQUIRED)
 find_package(PNG REQUIRED)
+FIND_PACKAGE(GTK2 REQUIRED)
 find_package(GDKPixBuf 1.6.0 REQUIRED)
 find_package(LibXml2 REQUIRED)
 find_package(SQLite3 3.6.20 REQUIRED)
@@ -52,14 +54,15 @@ set(OPENSLIDE_INCLUDES
   ${GDKPIXBUF_INCLUDE_DIR}
   ${LIBXML2_INCLUDE_DIR}
   ${SQLite3_INCLUDE_DIRS}
+  ${GTK2_INCLUDE_DIRS}
 )
-message(STATUS ${GLib_LIBRARY})
-message(STATUS ${GDKPIXBUF_LIBRARY})
+message(STATUS ${GLib_INCLUDE_DIRS})
 # required link directories, m is libm
 set(OPENSLIDE_DEP_LIBS
   ${ZLIB_LIBRARIES}
   ${OpenJPEG_LIBRARIES}
   ${JPEG_LIBRARIES}
+  ${GTK2_LIBRARIES}
   ${TIFF_LIBRARIES}
   ${GLib_LIBRARY}
   ${CAIRO_LIBRARIES}
