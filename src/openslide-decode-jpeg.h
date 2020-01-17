@@ -26,7 +26,6 @@
 #undef HAVE_STDLIB_H
 #include <jpeglib.h>
 #undef HAVE_STDLIB_H
-#include <config.h>  // fix damage
 
 #include <stdio.h>
 #include <stdint.h>

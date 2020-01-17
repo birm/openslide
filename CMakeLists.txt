@@ -1,19 +1,19 @@
 # working from configurefile at https://github.com/birm/${PROJECT_NAME}/blob/cmake/configure.ac
 cmake_minimum_required(VERSION 3.5)
 project(openslide VERSION 3.4.1 LANGUAGES C)
+add_compile_definitions(SUFFIXED_VERSION="${PROJECT_VERSION}")
 add_library(${PROJECT_NAME} "")
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/src/ ${CMAKE_SOURCE_DIR}/common/)
-
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/src/ ${CMAKE_SOURCE_DIR}/common/)
 file(GLOB openslide_SRC "${CMAKE_SOURCE_DIR}/src/*.c" )
-
 target_sources(${PROJECT_NAME} PRIVATE ${openslide_SRC})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake")
 
 option(USE_VALGRIND "If available, use valgrind for profiling." OFF)
+option(BUILD_TOOLS, "Build openslide cli tools." OFF)
 
-## TODO -- these version requirement numbers may be too strict/wrong depending on project
+## TODO -- many of these have version requirments, and some were behaving strange (e.g. openjpeg)
 
 # get requirements
 find_package(ZLIB REQUIRED)
@@ -27,29 +27,28 @@ find_package(PNG REQUIRED)
 find_package(GDKPIXBUF 1.6.0 REQUIRED)
 find_package(LIBXML2 REQUIRED)
 find_package(SQLITE3 3.6.20 REQUIRED)
-
 #includes
 target_include_directories(${PROJECT_NAME}
   PRIVATE
-  ${ZLIB_INCLUDE_DIRS}
-  ${JPEG_INCLUDE_DIRS}
-  ${TIFF_INCLUDE_DIRS}
-  ${OPENJPEG_INCLUDE_DIRS}
-  ${GLIB_INCLUDE_DIRS}
-  ${CAIRO_INCLUDE_DIRS}
-  ${PNG_INCLUDE_DIRS}
-  ${GDKPIXBUF_INCLUDE_DIR}
-  ${LIBXML2_INCLUDE_DIRS}
-  ${SQLITE3_INCLUDE_DIRS}
+    ${ZLIB_INCLUDE_DIRS}
+    ${OPENJPEG_INCLUDE_DIRS}
+    ${JPEG_INCLUDE_DIR}
+    ${TIFF_INCLUDE_DIR}
+    ${GLIB_INCLUDE_DIRS}
+    ${CAIRO_INCLUDE_DIRS}
+    ${PNG_INCLUDE_DIR}
+    ${GDKPIXBUF_INCLUDE_DIR}
+    ${LIBXML2_INCLUDE_DIR}
+    ${SQLITE3_INCLUDE_DIR}
 )
 
 # link requirements
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     ${ZLIB_LIBRARIES}
+    ${OPENJPEG_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${TIFF_LIBRARIES}
-    ${OPENJPEG_LIBRARIES}
     ${GLIB_LDFLAGS}
     ${Cairo_LIBRARIES}
     ${PNG_LIBRARIES}
@@ -64,30 +63,35 @@ if(USE_VALGRIND)
   target_link_libraries(${PROJECT_NAME} INTERFACE VALGRIND)
 endif()
 
-install(TARGETS openslide
-    EXPORT openslide-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
+
+# TODO check if we need this definition before passing it
+# openjpeg flag for >=2.1
+add_compile_definitions(HAVE_OPENJPEG2)
+
+# TODO check what os as to set FOPEN_CLOEXEC_FLAG
+add_compile_definitions(FOPEN_CLOEXEC_FLAG)
 
 
 # tools
-add_executable(openslide-show-properties "")
-target_sources(openslide-show-properties PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-show-properties.c)
-target_link_libraries(openslide-show-properties ${PROJECT_NAME})
+if(BUILD_TOOLS)
+  add_executable(openslide-show-properties "")
+  target_sources(openslide-show-properties PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-show-properties.c)
+  target_link_libraries(openslide-show-properties ${PROJECT_NAME})
 
-add_executable(openslide-write-png "")
-target_sources(openslide-write-png PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-write-png.c)
-target_link_libraries(openslide-write-png ${PROJECT_NAME})
+  add_executable(openslide-write-png "")
+  target_sources(openslide-write-png PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-write-png.c)
+  target_link_libraries(openslide-write-png ${PROJECT_NAME})
 
 
-add_executable(openslide-quickhash1sum "")
-target_sources(openslide-quickhash1sum PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-quickhash1sum.c)
-target_link_libraries(openslide-quickhash1sum ${PROJECT_NAME})
+  add_executable(openslide-quickhash1sum "")
+  target_sources(openslide-quickhash1sum PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-quickhash1sum.c)
+  target_link_libraries(openslide-quickhash1sum openslide)
+endif()
 
-set(TARGETS_EXPORT_NAME openslide-targets)
+set(TARGETS_EXPORT_NAME "${PROJECT_NAME}-targets")
 
 install(TARGETS openslide
-    EXPORT openslide-targets
+    EXPORT ${TARGETS_EXPORT_NAME}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
