@@ -72,6 +72,7 @@ add_compile_definitions(HAVE_OPENJPEG2)
 add_compile_definitions(FOPEN_CLOEXEC_FLAG)
 
 
+# TODO tools not building
 # tools
 if(BUILD_TOOLS)
   add_executable(openslide-show-properties "")
