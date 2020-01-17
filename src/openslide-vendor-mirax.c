@@ -28,7 +28,6 @@
  *
  */
 
-#include <config.h>
 
 #include "openslide-private.h"
 #include "openslide-decode-gdkpixbuf.h"

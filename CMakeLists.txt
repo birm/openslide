@@ -24,13 +24,13 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(GLIB REQUIRED glib-2.0)
 find_package(Cairo 1.2.0 REQUIRED)
 find_package(PNG REQUIRED)
-#find_package(GDKPIXBUF 1.6.0 REQUIRED)
+find_package(GDKPIXBUF 1.6.0 REQUIRED)
 find_package(LIBXML2 REQUIRED)
 find_package(SQLITE3 3.6.20 REQUIRED)
 
 #includes
 target_include_directories(${PROJECT_NAME}
-  PUBLIC
+  PRIVATE
   ${ZLIB_INCLUDE_DIRS}
   ${JPEG_INCLUDE_DIRS}
   ${TIFF_INCLUDE_DIRS}
@@ -38,14 +38,14 @@ target_include_directories(${PROJECT_NAME}
   ${GLIB_INCLUDE_DIRS}
   ${CAIRO_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
-  ${GDKPIXBUF_INCLUDE_DIRS}
+  ${GDKPIXBUF_INCLUDE_DIR}
   ${LIBXML2_INCLUDE_DIRS}
   ${SQLITE3_INCLUDE_DIRS}
 )
 
 # link requirements
 target_link_libraries(${PROJECT_NAME}
-  PUBLIC
+  PRIVATE
     ${ZLIB_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${TIFF_LIBRARIES}

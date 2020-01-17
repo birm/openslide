@@ -19,7 +19,6 @@
  *
  */
 
-#include <config.h>
 #include <string.h>
 
 #include "openslide-decode-sqlite.h"
