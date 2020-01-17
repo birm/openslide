@@ -29,7 +29,7 @@ find_package(LIBXML2 REQUIRED)
 find_package(SQLITE3 3.6.20 REQUIRED)
 #includes
 target_include_directories(${PROJECT_NAME}
-  PRIVATE
+  PUBLIC
     ${ZLIB_INCLUDE_DIRS}
     ${OPENJPEG_INCLUDE_DIRS}
     ${JPEG_INCLUDE_DIR}
@@ -44,7 +44,7 @@ target_include_directories(${PROJECT_NAME}
 
 # link requirements
 target_link_libraries(${PROJECT_NAME}
-  PRIVATE
+  PUBLIC
     ${ZLIB_LIBRARIES}
     ${OPENJPEG_LIBRARIES}
     ${JPEG_LIBRARIES}
@@ -75,18 +75,7 @@ add_compile_definitions(FOPEN_CLOEXEC_FLAG)
 # TODO tools not building
 # tools
 if(BUILD_TOOLS)
-  add_executable(openslide-show-properties "")
-  target_sources(openslide-show-properties PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-show-properties.c)
-  target_link_libraries(openslide-show-properties ${PROJECT_NAME})
-
-  add_executable(openslide-write-png "")
-  target_sources(openslide-write-png PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-write-png.c)
-  target_link_libraries(openslide-write-png ${PROJECT_NAME})
-
-
-  add_executable(openslide-quickhash1sum "")
-  target_sources(openslide-quickhash1sum PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/openslide-quickhash1sum.c)
-  target_link_libraries(openslide-quickhash1sum openslide)
+  add_subdirectory(tools)
 endif()
 
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}-targets")
