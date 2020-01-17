@@ -32,11 +32,12 @@ find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(OPENJPEG REQUIRED)
 find_package(TIFF REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_search_module(GLIB REQUIRED glib-2.0)
+find_package(GLib REQUIRED)
+#find_package(PkgConfig REQUIRED)
+#pkg_search_module(GLIB REQUIRED glib-2.0)
 find_package(Cairo 1.2.0 REQUIRED)
 find_package(PNG REQUIRED)
-find_package(GDKPIXBUF 1.6.0 REQUIRED)
+find_package(GDKPixBuf 1.6.0 REQUIRED)
 find_package(LibXml2 REQUIRED)
 find_package(SQLite3 3.6.20 REQUIRED)
 #required includes
@@ -45,26 +46,28 @@ set(OPENSLIDE_INCLUDES
   ${OpenJPEG_INCLUDE_DIRS}
   ${JPEG_INCLUDE_DIR}
   ${TIFF_INCLUDE_DIR}
-  ${GLIB_INCLUDE_DIRS}
+  ${GLib_INCLUDE_DIRS}
   ${CAIRO_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIR}
   ${GDKPIXBUF_INCLUDE_DIR}
   ${LIBXML2_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
+  ${SQLite3_INCLUDE_DIRS}
 )
-
-# required link directories
+message(STATUS ${GLib_LIBRARY})
+message(STATUS ${GDKPIXBUF_LIBRARY})
+# required link directories, m is libm
 set(OPENSLIDE_DEP_LIBS
   ${ZLIB_LIBRARIES}
   ${OpenJPEG_LIBRARIES}
   ${JPEG_LIBRARIES}
   ${TIFF_LIBRARIES}
-  ${GLIB_LDFLAGS}
-  ${Cairo_LIBRARIES}
+  ${GLib_LIBRARY}
+  ${CAIRO_LIBRARIES}
   ${PNG_LIBRARIES}
-  ${GDKPIXBUF_LIBRARIES}
+  ${GDKPIXBUF_LIBRARY}
   ${LIBXML2_LIBRARIES}
-  ${SQLITE3_LIBRARIES}
+  ${SQLite3_LIBRARIES}
+  m
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSLIDE_INCLUDES})
 target_link_libraries(${PROJECT_NAME} ${OPENSLIDE_DEP_LIBS})
@@ -85,7 +88,6 @@ add_compile_definitions(FOPEN_CLOEXEC_FLAG)
 
 
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}-targets")
-message(STATUS ${CMAKE_INSTALL_LIBDIR})
 install(
     TARGETS openslide
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

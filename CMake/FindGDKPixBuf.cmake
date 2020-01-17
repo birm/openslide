@@ -17,7 +17,7 @@ if( PKG_CONFIG_FOUND )
     # These variables are then used as hints to find_path()
     # and find_library()
     pkg_search_module( PC_GDKPIXBUF gdk-pixbuf-2.0 )
-endif()
+endif( PKG_CONFIG_FOUND )
 
 find_path( GDKPIXBUF_INCLUDE_DIR gdk-pixbuf/gdk-pixbuf.h
     HINTS
@@ -30,10 +30,12 @@ find_path( GDKPIXBUF_INCLUDE_DIR gdk-pixbuf/gdk-pixbuf.h
         /usr/include/
         /sw/include/
         /usr/local/include/
+        ${KDE4_INCLUDE_DIR}
         # Search all subdirs of the above
         /usr/include/*
         /sw/include/*
         /usr/local/include/*
+        ${KDE4_INCLUDE_DIR}/*
     PATH_SUFFIXES
         # Subdirectory hints
         gdk-pixbuf-2.0
@@ -56,6 +58,6 @@ find_package_handle_standard_args( GDKPixBuf DEFAULT_MSG
 )
 if( GDKPIXBUF_FOUND )
     message( STATUS "\tInclude directory: ${GDKPIXBUF_INCLUDE_DIR}" )
-endif()
+endif( GDKPIXBUF_FOUND )
 
 mark_as_advanced( GDKPIXBUF_INCLUDE_DIR GDKPIXBUF_LIBRARY )
