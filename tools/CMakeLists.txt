@@ -1,16 +1,4 @@
-project(openslide-bins)
-add_executable(${PROJECT_NAME} openslide-show-properties.c openslide-write-png.c openslide-quickhash1sum.c)
-
-target_link_libraries(${PROJECT_NAME}
-    ${ZLIB_LIBRARIES}
-    ${OPENJPEG_LIBRARIES}
-    ${JPEG_LIBRARIES}
-    ${TIFF_LIBRARIES}
-    ${GLIB_LDFLAGS}
-    ${Cairo_LIBRARIES}
-    ${PNG_LIBRARIES}
-    ${GDKPIXBUF_LIBRARIES}
-    ${LIBXML2_LIBRARIES}
-    ${SQLITE3_LIBRARIES}
-    openslide
-)
+add_executable(openslide-bins openslide-show-properties.c openslide-quickhash1sum.c openslide-write-png.c)
+message(STATUS "${SQLITE3_INCLUDE_DIR}")
+target_include_directories(openslide-bins PUBLIC ${OPENSLIDE_INCLUDES})
+target_link_libraries(openslide-bins openslide ${OPENSLIDE_DEP_LIBS})
