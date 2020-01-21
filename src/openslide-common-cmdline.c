@@ -20,10 +20,6 @@
  *
  */
 
-// don't complain about g_option_context_parse_strv(), which is called
-// conditionally
-#undef GLIB_VERSION_MAX_ALLOWED
-#define GLIB_VERSION_MAX_ALLOWED G_ENCODE_VERSION(2,40)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +27,6 @@
 #include <glib.h>
 #include "openslide.h"
 #include "openslide-common.h"
-#include "config.h"
 
 static const char *version_format = "%s " SUFFIXED_VERSION ", "
 "using OpenSlide %s\n"

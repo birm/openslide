@@ -1,8 +1,7 @@
 FROM ubuntu:disco
 
-
 RUN apt-get -y update
-RUN apt-get install -q -y cmake libgtk2.0-dev \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -q -y cmake libgtk2.0-dev \
 											libjpeg-dev \
 											liblcms2-dev \
 											libpng-dev \
@@ -10,7 +9,10 @@ RUN apt-get install -q -y cmake libgtk2.0-dev \
 											libtiff-dev \
 											libtool \
 											libxml2-dev \
-											sqlite3 git
+											sqlite3 git \
+											libudev-dev \
+											libunique-dev \
+											libnotify-dev
 
 # openjpeg
 workdir /
