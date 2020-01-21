@@ -49,7 +49,6 @@ set(OPENSLIDE_INCLUDES
   ${SQLite3_INCLUDE_DIRS}
 
 )
-message(STATUS ${GTK2_INCLUDE_DIRS})
 # required link directories, m is libm
 set(OPENSLIDE_DEP_LIBS
   ${ZLIB_LIBRARIES}
@@ -75,14 +74,20 @@ if(USE_VALGRIND)
 endif()
 
 
-# TODO check if we need this definition before passing it
 # openjpeg flag for >=2.1
-add_compile_definitions(HAVE_OPENJPEG2)
+if(OpenJPEG_VERSION VERSION_GREATER "2.1.0")
+  add_compile_definitions(HAVE_OPENJPEG2)
+endif(OpenJPEG_VERSION VERSION_GREATER "2.1.0")
 
-# TODO check what os as to set FOPEN_CLOEXEC_FLAG
-add_compile_definitions(FOPEN_CLOEXEC_FLAG)
 
-# TODO tools not building
+# check OS as to set FOPEN_CLOEXEC_FLAG
+IF(MINGW)
+  add_compile_definitions(FOPEN_CLOEXEC_FLAG="N")
+
+ELSE(MINGW)
+  add_compile_definitions(FOPEN_CLOEXEC_FLAG="e")
+ENDIF(MINGW)
+
 # tools
 if(BUILD_TOOLS)
   add_subdirectory(tools)
